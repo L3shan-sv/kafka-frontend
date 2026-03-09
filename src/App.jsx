@@ -1,18 +1,21 @@
 import { useState } from "react";
-import Header          from "./components/Header";
-import StatusBadge     from "./components/StatusBadge";
-import RideForm        from "./components/RideForm";
-import ResponseViewer  from "./components/ResponseViewer";
-import LoadTestConfig  from "./components/LoadTestConfig";
-import LoadTestResults from "./components/LoadTestResults";
-import { useRide }     from "./hooks/useRide";
-import { useLoadTest } from "./hooks/useLoadTest";
+import Header           from "./components/Header";
+import StatusBadge      from "./components/StatusBadge";
+import RideForm         from "./components/RideForm";
+import ResponseViewer   from "./components/ResponseViewer";
+import LoadTestConfig   from "./components/LoadTestConfig";
+import LoadTestResults  from "./components/LoadTestResults";
+import ScenariosPanel   from "./components/ScenariosPanel";
+import { useRide }      from "./hooks/useRide";
+import { useLoadTest }  from "./hooks/useLoadTest";
+import { useScenarios } from "./hooks/useScenarios";
 
 export default function App() {
   const [tab, setTab] = useState("single");
 
-  const ride     = useRide();
-  const loadTest = useLoadTest();
+  const ride      = useRide();
+  const loadTest  = useLoadTest();
+  const scenarios = useScenarios();
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
@@ -23,8 +26,6 @@ export default function App() {
         {/* ── SINGLE RIDE ─────────────────────────────────────── */}
         {tab === "single" && (
           <div className="flex gap-5 h-full">
-
-            {/* Left column — controls */}
             <div className="w-80 flex-shrink-0 flex flex-col gap-4">
               <StatusBadge
                 state={ride.state}
@@ -39,8 +40,6 @@ export default function App() {
                 />
               </div>
             </div>
-
-            {/* Right column — response + log */}
             <div className="flex-1 flex flex-col gap-4 min-h-0" style={{ minHeight: "calc(100vh - 120px)" }}>
               <ResponseViewer
                 response={ride.response}
@@ -48,15 +47,12 @@ export default function App() {
                 error={ride.error}
               />
             </div>
-
           </div>
         )}
 
         {/* ── LOAD TEST ────────────────────────────────────────── */}
         {tab === "load" && (
           <div className="flex gap-5">
-
-            {/* Left — config */}
             <div className="w-80 flex-shrink-0">
               <div className="bg-white/[0.02] border border-white/5 rounded-xl p-5">
                 <p className="text-[11px] font-medium text-white/25 uppercase tracking-widest mb-5">
@@ -69,8 +65,6 @@ export default function App() {
                 />
               </div>
             </div>
-
-            {/* Right — results */}
             <div className="flex-1">
               {(loadTest.running || loadTest.results) ? (
                 <div className="bg-white/[0.02] border border-white/5 rounded-xl p-5">
@@ -91,9 +85,25 @@ export default function App() {
                 </div>
               )}
             </div>
-
           </div>
         )}
+
+        {/* ── SCENARIOS ────────────────────────────────────────── */}
+        {tab === "scenarios" && (
+          <ScenariosPanel
+            running={scenarios.running}
+            events={scenarios.events}
+            rideState={scenarios.rideState}
+            retryCount={scenarios.retryCount}
+            loadStats={scenarios.loadStats}
+            activeFailure={scenarios.activeFailure}
+            activeScenario={scenarios.activeScenario}
+            error={scenarios.error}
+            startScenario={scenarios.startScenario}
+            abort={scenarios.abort}
+          />
+        )}
+
       </main>
     </div>
   );
