@@ -19,8 +19,9 @@ export default function Header({ activeTab, onTabChange }) {
       {/* Tabs */}
       <nav className="flex items-center bg-white/5 border border-white/8 rounded-lg p-1 gap-1">
         {[
-          { id: "single", label: "Single Ride" },
-          { id: "load",   label: "Load Test"   },
+          { id: "single",    label: "Single Ride"  },
+          { id: "load",      label: "Load Test"    },
+          { id: "scenarios", label: "Scenarios"    },
         ].map(({ id, label }) => (
           <button
             key={id}
